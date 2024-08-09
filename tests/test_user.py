@@ -18,3 +18,10 @@ def test_user_equality():
     new_guy_1 = User(74, "handle1", "123456trewq", "someguy@example.com", "John Smith")
     new_guy_2 = User(74, "handle1", "123456trewq", "someguy@example.com", "John Smith")
     assert new_guy_1 == new_guy_2
+
+"""
+user objects print in a readable format 
+"""
+def test_user_formatting():
+    new_guy = User(88, "handle1", "123456trewq", "someguy@example.com", "John Smith")
+    assert str(new_guy) == 'User(88, handle1, 123456trewq, someguy@example.com, John Smith)'
