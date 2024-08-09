@@ -10,3 +10,11 @@ def test_user_constructor():
     assert new_guy.user_password == "123456trewq"
     assert new_guy.email == "someguy@example.com"
     assert new_guy.full_name == "John Smith"
+
+"""
+two users with same information compare ads equals
+"""
+def test_user_equality():
+    new_guy_1 = User(74, "handle1", "123456trewq", "someguy@example.com", "John Smith")
+    new_guy_2 = User(74, "handle1", "123456trewq", "someguy@example.com", "John Smith")
+    assert new_guy_1 == new_guy_2
