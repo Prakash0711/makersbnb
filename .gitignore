@@ -1,1 +1,3 @@
 makersbnb_venv/
+pytest_cache/
+**pycache**
