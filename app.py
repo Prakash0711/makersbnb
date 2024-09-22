@@ -12,5 +12,12 @@ from lib.booking_repository import BookingRepository
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
 
+@app.route('/home', methods=['GET'])
+def get_home():
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    space_list = repository.all()
+    return render_template('home.html', spaces = space_list)
+
 if __name__ == '__main__':
     app.run(debug=True, port=int(os.environ.get('PORT', 5001)))

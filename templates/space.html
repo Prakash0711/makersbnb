@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>This Space</title>
+
+        <link rel="stylesheet"     type="text/css"   href="/static/space.css" >
+    </head>
+    <body>
+        <h2 id="space_address">{{space.address}}</h2>
+            <div class="space">
+                <p id="space_description">{{space.description}}</p>
+                <p id="space_price">Price: £{{space.price}}</p>
+            </div>
+            <div class="calendar">
+                <!-- Calendar will be dynamically populated here -->
+                <div class="month">
+                    <span class="month-name">May 2024</span>
+                    <div class="days-grid">
+                        <!-- Days for the month -->
+                        {% for day in range(1, 32) %}
+                        <form action="/book" method="post">
+                        <button type="submit">{{ book }}</button>
+                        </form>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+    </body>
+</html>

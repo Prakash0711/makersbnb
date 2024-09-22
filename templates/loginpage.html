@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>MakersBnB</title>
+
+        <link rel="stylesheet"  type="text/css" href="/static/home.css">
+    </head>
+    <body>
+        <h1>Book a space</h1>
+        <p>Book a beautiful space with MakersBNB for your ideal getaway! Look below for some inspiration:</p>
+        <form action="/new_listing" method="get">
+        <button type="submit">List a space</button>
+        </form>
+        <div>
+            <form action="/home" method="post">
+                <label for="start_date">From:</label>
+                <input type="date" id="start_date" name="start-date">
+                <label for="end_date">End:</label>
+                <input type="date" id="end_date" name="end-date">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+        <div class="space_list">
+            {% for space in spaces %}
+            <div class="space">
+                <h2 id="space_address">{{space.address}}</h2>
+                <p id="space_description">{{space.description}}</p>
+                <p id="space_price">Price: £{{space.price}}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </body>
+</html>
