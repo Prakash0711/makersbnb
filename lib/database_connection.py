@@ -6,6 +6,7 @@ from psycopg.rows import dict_row
 # This class helps us interact with the database.
 # It wraps the underlying psycopg library that we are using.
 
+
 # If the below seems too complex right now, that's OK.
 # That's why we have provided it!
 class DatabaseConnection:
@@ -20,15 +21,23 @@ class DatabaseConnection:
     # to localhost and select the database name given in argument.
     def connect(self):
         try:
-            user = os.getenv('DB_USER', 'postgres')
-            password = os.getenv('DB_PASSWORD', '')
-            print(f"User: {user}, Password: {password}")
+            user = os.getenv("DB_USER", "postgres")
+            password = os.getenv("DB_PASSWORD", "")
+            print(
+                f"User: {user}, Password: {password}"
+            )  # Check if they are printed correctly
+            db_name = self._database_name()
+            print(f"Connecting to database: {db_name}")
+
             self.connection = psycopg.connect(
-                f"postgresql://{user}:{password}@localhost/{self._database_name()}",
-                row_factory=dict_row)
-        except psycopg.OperationalError:
-            raise Exception(f"Couldn't connect to the database {self._database_name()}! " \
-                    f"Did you create it using `createdb {self._database_name()}`?")
+                f"postgresql://{user}:{password}@localhost/{db_name}",
+                row_factory=dict_row,
+            )
+            print("Connection successful!")  # Confirm if connection is established
+        except psycopg.OperationalError as e:
+            raise Exception(
+                f"Couldn't connect to the database {db_name}! Error: {str(e)}"
+            )
 
     # This method seeds the database with the given SQL file.
     # We use it to set up our database ready for our tests or application.
@@ -53,11 +62,13 @@ class DatabaseConnection:
             self.connection.commit()
             return result
 
-    CONNECTION_MESSAGE = '' \
-        'DatabaseConnection.exec_params: Cannot run a SQL query as ' \
-        'the connection to the database was never opened. Did you ' \
-        'make sure to call first the method DatabaseConnection.connect` ' \
-        'in your app.py file (or in your tests)?'
+    CONNECTION_MESSAGE = (
+        ""
+        "DatabaseConnection.exec_params: Cannot run a SQL query as "
+        "the connection to the database was never opened. Did you "
+        "make sure to call first the method DatabaseConnection.connect` "
+        "in your app.py file (or in your tests)?"
+    )
 
     # This private method checks that we're connected to the database.
     def _check_connection(self):
@@ -71,12 +82,15 @@ class DatabaseConnection:
         else:
             return self.DEV_DATABASE_NAME
 
+
 # This function integrates with Flask to create one database connection that
 # Flask request can use. To see how to use it, look at example_routes.py
 def get_flask_database_connection(app):
-    if not hasattr(g, 'flask_database_connection'):
+    if not hasattr(g, "flask_database_connection"):
         g.flask_database_connection = DatabaseConnection(
-            test_mode=((os.getenv('APP_ENV') == 'test') or (app.config['TESTING'] == True))
+            test_mode=(
+                (os.getenv("APP_ENV") == "test") or (app.config["TESTING"] == True)
+            )
         )
         g.flask_database_connection.connect()
     return g.flask_database_connection
