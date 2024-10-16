@@ -61,5 +61,27 @@ def signup():
     return render_template("signup.html")
 
 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["user_password"]
+
+        # Get user from database by email
+        connection = get_flask_database_connection(app)
+        repository = UserRepository(connection)
+        new_user = repository.find_by_username(username)
+
+        if new_user and bcrypt.check_password_hash(new_user.user_password, password):
+            # Session management
+            session["user_id"] = new_user.id
+            session["username"] = new_user.username
+            flash("Login succesful!")
+            return redirect(url_for("get_home"))
+        else:
+            flash("Invalid input")
+    return render_template("login.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=int(os.environ.get("PORT", 5001)))
