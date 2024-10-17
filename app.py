@@ -97,5 +97,29 @@ def userhome():
     return render_template("userhome.html")
 
 
+@app.route("/search_space", methods=["GET", "POST"])
+def search_space():
+    if not is_logged_in():
+        flash("Please log in first")
+        return redirect(url_for("login"))
+    return render_template("search_space.html")
+
+
+@app.route("/list_space", methods=["GET", "POST"])
+def list_space():
+    if not is_logged_in:
+        flash("Please log in first")
+        return redirect(url_for("login"))
+    return render_template("list_space.html")
+
+
+@app.route("/my_bookings", methods=["GET", "POST"])
+def my_bookings():
+    if not is_logged_in:
+        flash("Please log in first")
+        return redirect(url_for("login"))
+    return render_template("my_bookings.html")
+
+
 if __name__ == "__main__":
     app.run(debug=True, port=int(os.environ.get("PORT", 5001)))
