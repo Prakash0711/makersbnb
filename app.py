@@ -107,7 +107,7 @@ def search_space():
 
 @app.route("/list_space", methods=["GET", "POST"])
 def list_space():
-    if not is_logged_in:
+    if not is_logged_in():
         flash("Please log in first")
         return redirect(url_for("login"))
     return render_template("list_space.html")
@@ -115,7 +115,7 @@ def list_space():
 
 @app.route("/my_bookings", methods=["GET", "POST"])
 def my_bookings():
-    if not is_logged_in:
+    if not is_logged_in():
         flash("Please log in first")
         return redirect(url_for("login"))
     return render_template("my_bookings.html")

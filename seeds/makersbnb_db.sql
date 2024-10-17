@@ -21,6 +21,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS spaces (
     id SERIAL PRIMARY KEY,
     address text UNIQUE,
+    city text,
     description text,
     price decimal,
     host_id int,
@@ -57,11 +58,18 @@ INSERT INTO users (username, user_password, email, full_name) VALUES
 ('mike_jones', 'mikepass', 'mike@example.com', 'Mike Jones'),
 ('sara_williams', 'sara123', 'sara@example.com', 'Sara Williams');
 
-INSERT INTO spaces (address, description, price, host_id) VALUES
-('123 Main St', 'Cozy apartment in the heart of downtown', 100, 1),
-('456 Elm St', 'Spacious loft with city views', 150, 2),
-('789 Oak St', 'Charming cottage near the beach', 120, 3),
-('321 Pine St', 'Modern studio with rooftop access', 80, 4);
+INSERT INTO spaces (address, city, description, price, host_id) VALUES
+('221B Baker Street', 'London', 'A classic flat in the heart of London', 180.00, 1),
+('10 Downing Street', 'London', 'A historic townhouse with a political twist', 300.00, 2),
+('15 Abbey Road', 'Liverpool', 'A modern apartment near famous recording studios', 120.50, 3),
+('77 Canongate', 'Edinburgh', 'A charming flat on the Royal Mile', 175.75, 4),
+('50 Castle Street', 'Edinburgh', 'An apartment with views of Edinburgh Castle', 220.00, 3),
+('12 Kings Road', 'Brighton', 'A beachfront apartment with stunning sea views', 190.00, 2),
+('34 Park Lane', 'Cardiff', 'A cozy apartment near Cardiff Castle', 140.99, 1),
+('8 Duke Street', 'Glasgow', 'A stylish flat in the heart of Glasgow', 160.00, 2),
+('3 St. Peter’s Avenue', 'Bristol', 'A quirky flat in Bristol’s creative quarter', 210.45, 3),
+('22 High Street', 'Manchester', 'A chic city apartment near the Northern Quarter', 195.00, 4);
+
 
 INSERT INTO bookings (host_id, guest_id, space_id, booking_date, booking_status) VALUES
 (1, 2, 1, '2024-05-10', 'approved'),
