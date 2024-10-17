@@ -25,9 +25,6 @@ class DatabaseConnection:
             load_dotenv()
             user = os.getenv("DB_USER")
             password = os.getenv("DB_PASSWORD")
-            print(
-                f"User: {user}, Password: {password}"
-            )  # Check if they are printed correctly
             db_name = self._database_name()
             print(f"Connecting to database: {db_name}")
 

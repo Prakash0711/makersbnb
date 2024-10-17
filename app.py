@@ -31,6 +31,10 @@ def get_home():
     return render_template("home.html", spaces=space_list)
 
 
+def is_logged_in():
+    return "user_id" in session
+
+
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
     if request.method == "POST":
@@ -56,7 +60,7 @@ def signup():
         repository = UserRepository(connection)
         repository.add_user(new_user)
 
-        flash("Welcome! Please login")
+        flash(f"Welcome! Please login")
         return redirect(url_for("login"))
     return render_template("signup.html")
 
@@ -76,11 +80,21 @@ def login():
             # Session management
             session["user_id"] = new_user.id
             session["username"] = new_user.username
+            session["full_name"] = new_user.full_name
             flash("Login succesful!")
-            return redirect(url_for("get_home"))
+            return redirect(url_for("userhome"))
         else:
             flash("Invalid input")
     return render_template("login.html")
+
+
+@app.route("/userhome", methods=["GET"])
+def userhome():
+    if not is_logged_in():
+        flash("Please login first")
+        return redirect(url_for("login"))
+
+    return render_template("userhome.html")
 
 
 if __name__ == "__main__":
