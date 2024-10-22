@@ -102,7 +102,17 @@ def search_space():
     if not is_logged_in():
         flash("Please log in first")
         return redirect(url_for("login"))
-    return render_template("search_space.html")
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+    spaces = repository.all()
+
+    if request.method == "POST":
+        city = request.form.get("city")
+        min_price = request.form.get("min_price")
+        max_price = request.form.get("max_price")
+        spaces = repository.filtered_space(city, min_price, max_price)
+
+    return render_template("search_space.html", spaces=spaces)
 
 
 @app.route("/list_space", methods=["GET", "POST"])
@@ -110,6 +120,34 @@ def list_space():
     if not is_logged_in():
         flash("Please log in first")
         return redirect(url_for("login"))
+
+    if request.method == "POST":
+        # Gather form data
+        address = request.form["address"]
+        city = request.form["city"]
+        description = request.form["description"]
+        price = request.form["price"]
+
+        host_id = session["user_id"]
+
+        # Create a Space object
+        new_space = Space(
+            space_id=None,
+            address=address,
+            city=city,
+            description=description,
+            price=price,
+            host_id=host_id,
+        )
+
+        # Save the new space to the database
+        connection = get_flask_database_connection(app)
+        repository = SpaceRepository(connection)
+        repository.add(new_space)
+
+        flash("Space listed successfully!")
+        return redirect(url_for("userhome"))
+
     return render_template("list_space.html")
 
 
@@ -118,7 +156,49 @@ def my_bookings():
     if not is_logged_in():
         flash("Please log in first")
         return redirect(url_for("login"))
-    return render_template("my_bookings.html")
+
+    user_id = session["user_id"]
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+
+    # Fetch bookings where the user is the host
+    requests_received = booking_repo.get_requests_for_host(user_id)
+
+    # Fetch bookings where the user is the guest
+    user_bookings = booking_repo.get_bookings_for_user(user_id)
+
+    return render_template(
+        "my_bookings.html",
+        requests_received=requests_received,
+        user_bookings=user_bookings,
+    )
+
+
+@app.route("/update_booking_status/<int:booking_id>", methods=["POST"])
+def update_booking_status(booking_id):
+    if not is_logged_in():
+        flash("Please log in first")
+        return redirect(url_for("login"))
+
+    action = request.form.get("action")
+
+    # Map actions to enum values
+    if action == "approve":
+        status = "approved"
+    elif action == "deny":
+        status = "denied"
+    else:
+        flash("Invalid action")
+        return redirect(url_for("my_bookings"))
+
+    connection = get_flask_database_connection(app)
+    booking_repo = BookingRepository(connection)
+
+    # Update the booking status in the database
+    booking_repo.update(booking_id, status)
+
+    flash(f"Booking has been {status}.")
+    return redirect(url_for("my_bookings"))
 
 
 if __name__ == "__main__":

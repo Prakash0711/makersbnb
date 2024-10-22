@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Bookings</title>
+</head>
+<body>
+    <h1>My Bookings</h1>
+
+    <!-- Requests received for the user's spaces -->
+    <h2>Booking Requests for My Spaces</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Address</th>
+                <th>City</th>
+                <th>Guest Name</th>
+                <th>Booking Date Start</th>
+                <th>Booking Date End</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for request in requests_received %}
+            <tr>
+                <td>{{ request['address'] }}</td>
+                <td>{{ request['city'] }}</td>
+                <td>{{ request['guest_name'] }}</td>
+                <td>{{ request['booking_date_start'] }}</td>
+                <td>{{ request['booking_date_end'] }}</td>
+                <td>
+                    {% if request['booking_status'] is not none %}
+                        {{ request['booking_status'].capitalize() }}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td>
+                    {% if request['booking_status'] == 'pending' %}
+                    <form action="{{ url_for('update_booking_status', booking_id=request['id']) }}" method="POST">
+                        <button type="submit" name="action" value="approve">Approve</button>
+                        <button type="submit" name="action" value="deny">Deny</button>
+                    </form>
+                    {% else %}
+                        {% if request['booking_status'] is not none %}
+                            {{ request['booking_status'].capitalize() }}
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+
+    <!-- User's bookings -->
+    <h2>My Bookings</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Address</th>
+                <th>City</th>
+                <th>Host Name</th>
+                <th>Booking Date Start</th>
+                <th>Booking Date End</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for booking in user_bookings %}
+            <tr>
+                <td>{{ booking['address'] }}</td>
+                <td>{{ booking['city'] }}</td>
+                <td>{{ booking['host_name'] }}</td>
+                <td>{{ booking['booking_date_start'] }}</td>
+                <td>{{ booking['booking_date_end'] }}</td>
+                <td>{{ booking['booking_status'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

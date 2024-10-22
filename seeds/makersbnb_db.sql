@@ -37,7 +37,8 @@ CREATE TABLE IF NOT EXISTS bookings (
     host_id int,
     guest_id int,
     space_id int,
-    booking_date date,
+    booking_date_start date,
+    booking_date_end date,
     booking_status status,
     constraint fk_guest foreign key(guest_id)
         references users(id)
@@ -71,8 +72,8 @@ INSERT INTO spaces (address, city, description, price, host_id) VALUES
 ('22 High Street', 'Manchester', 'A chic city apartment near the Northern Quarter', 195.00, 4);
 
 
-INSERT INTO bookings (host_id, guest_id, space_id, booking_date, booking_status) VALUES
-(1, 2, 1, '2024-05-10', 'approved'),
-(2, 3, 2, '2024-05-15', 'pending'),
-(3, 4, 3, '2024-05-20', 'denied'),
-(4, 1, 4, '2024-05-25', 'approved');
+INSERT INTO bookings (host_id, guest_id, space_id, booking_date_start, booking_date_end, booking_status) VALUES
+(1, 2, 1, '2024-05-10', '2024-05-12', 'approved'),
+(2, 3, 2, '2024-05-15', '2024-05-17', 'pending'),
+(3, 4, 3, '2024-05-20', '2024-05-22', 'denied'),
+(4, 1, 4, '2024-05-25', '2024-05-27', 'approved');
