@@ -53,7 +53,7 @@ class SpaceRepository:
             SELECT space_id FROM bookings
             WHERE booking_status = 'approved'
             AND (
-                (booking_date <= %s AND booking_date + INTERVAL '1 day' >= %s)
+                (booking_date_start <= %s AND booking_date_end + INTERVAL '1 day' >= %s)
             )
         )
         """
