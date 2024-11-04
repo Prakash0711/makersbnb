@@ -25,7 +25,17 @@
                 <label for="max_price">Maximum Price:</label>
                 <input type="number" id="max_price" name="max_price" placeholder="1000">
             </div>
+
+            <div>
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date" value="{{ start_date}}">
+            </div>
         
+            <div>
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date"value="{{end_date}}">
+            </div>
+
             <div>
                 <button type="submit">Search</button>
             </div>
@@ -36,8 +46,14 @@
                 <h3>{{ space.address }} - {{ space.city }}</h3>
                 <p>{{ space.description }}</p>
                 <p>Price: £{{ space.price }}</p>
+                <form method="POST" action="{{ url_for('book_space', space_id=space.space_id) }}">
+                    <input type="hidden" name="start_date" value="{{ request.form.get('start_date') }}">
+                    <input type="hidden" name="end_date" value="{{ request.form.get('end_date') }}">
+                    <button type="submit">Book</button>
+                </form>
             </div>
         {% endfor %}
+
         
     </body>
 </html>

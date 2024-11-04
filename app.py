@@ -106,13 +106,25 @@ def search_space():
     repository = SpaceRepository(connection)
     spaces = repository.all()
 
+    check_in_date = None
+    check_out_date = None
+
     if request.method == "POST":
         city = request.form.get("city")
         min_price = request.form.get("min_price")
         max_price = request.form.get("max_price")
-        spaces = repository.filtered_space(city, min_price, max_price)
+        check_in_date = request.form.get("start_date") or None
+        check_out_date = request.form.get("end_date") or None
+        spaces = repository.filtered_space(
+            city, min_price, max_price, check_in_date, check_out_date
+        )
 
-    return render_template("search_space.html", spaces=spaces)
+    return render_template(
+        "search_space.html",
+        spaces=spaces,
+        start_date=check_in_date,
+        end_date=check_out_date,
+    )
 
 
 @app.route("/list_space", methods=["GET", "POST"])
@@ -199,6 +211,38 @@ def update_booking_status(booking_id):
 
     flash(f"Booking has been {status}.")
     return redirect(url_for("my_bookings"))
+
+
+@app.route("/book_space/<int:space_id>", methods=["POST"])
+def book_space(space_id):
+    if not is_logged_in():
+        flash("Please log in first")
+        return redirect(url_for("login"))
+
+    connection = get_flask_database_connection(app)
+    repository = SpaceRepository(connection)
+
+    # Get the start and end date from the form
+    start_date = request.form.get("start_date")
+    end_date = request.form.get("end_date")
+
+    if not start_date or not end_date:
+        flash("Please select check-in and check-out dates.")
+        print("no start date or end date")
+        return redirect(
+            url_for("search_space")
+        )  # Redirect back to search page or show an error
+
+    # Assuming you have the guest_id stored in the session or user info
+    guest_id = session[
+        "user_id"
+    ]  # Implement this function to get the logged-in user's ID
+
+    # Create a new booking entry
+    repository.add_booking(guest_id, space_id, start_date, end_date)
+
+    flash("Booking request submitted successfully!")
+    return redirect(url_for("userhome"))  # Redirect to a user home or bookings page
 
 
 if __name__ == "__main__":
